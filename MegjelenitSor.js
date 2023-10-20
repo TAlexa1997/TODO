@@ -5,41 +5,30 @@ class MegjelenitSor {
     this.#adat = adat;
     this.index = index;
     this.tablaElem = szuloElem;
-
     this.#sor();
-    /** eseménykezelők a kész és a törlés gombokhoz */
+
     this.sorElem = this.tablaElem.find("tr:last");
     this.keszElem = this.sorElem.find(".kesz");
     this.torolElem = this.sorElem.find(".torol");
 
     this.keszElem.on("click", () => {
-      this.#esemenyTrigger("kesz");
-      this.sorElem.find(".kesz").replaceWith('<span class="megse">❌</span>');
+      this.#adat.kesz = !this.#adat.kesz; 
       this.setHatterszin();
-      this.megseElem = this.sorElem.find(".megse");
-      this.megseElem.on("click", () => {
-        this.#esemenyTrigger("megse");
-        this.sorElem.find(".megse").replaceWith('<span class="kesz">✔️</span>');
-        this.setHatterszin();
-      });
+      this.#esemenyTrigger(this.#adat.kesz ? "kesz" : "megse"); 
     });
 
     this.torolElem.on("click", () => {
       this.#esemenyTrigger("torles");
     });
-
-    // this.megseElem.on("click", () => {
-    //   this.#esemenyTrigger("megse");
-    //   this.sorElem.find(".megse").replaceWith('<span class="kesz">✔️</span>');
-    //   this.setHatterszin();
-    // });
   }
 
   setHatterszin() {
-    if (this.keszElem.hasClass("kesz")) {
+    if (this.#adat.kesz) {
       this.sorElem.css("background-color", "green");
+      this.keszElem.text("❌");
     } else {
-      this.sorElem.css("background-color", "37, 34, 30, 0.692");
+      this.sorElem.css("background-color", "rgba(37, 34, 30, 0.692)");
+      this.keszElem.text("✔️");
     }
   }
 
@@ -51,16 +40,17 @@ class MegjelenitSor {
         txt += `<td>${this.#adat[key]}</td>`;
       }
     }
-    txt += `<td><span class="kesz">✔️</span> <span class="torol">🗑</span></td>`;
+    txt += `<td><span class="kesz">${this.#adat.kesz ? "❌" : "✔️"}</span> <span class="torol">🗑</span></td>`;
     txt += "</tr>";
     this.tablaElem.append(txt);
   }
-  
 
   #esemenyTrigger(esemenyNev) {
     const esemeny = new CustomEvent(esemenyNev, { detail: this });
     window.dispatchEvent(esemeny);
   }
 }
+
 export default MegjelenitSor;
+
 
